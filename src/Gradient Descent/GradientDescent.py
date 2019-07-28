@@ -51,32 +51,35 @@ def GradientDescent(theta0,theta1,learning_rate,input_train,label_train):
 			th0 = th0 + learning_rate*e # Bias Update
 			th1 = th1 + learning_rate*e*input_train[i] # Weight Update
 			mse = cost_function(th0,th1,input_train,label_train)
-			parameter_train.append((th1,th0))
-			MSE_train.append(mse)
+			if epoch == (EPOCH - 1):
+				parameter_train.append((th1,th0))
+				MSE_train.append(mse)
 		print(f"epoch : {epoch:04d} theta1/weight : {th1:.4f} theta0/bias : {th0:.4f} pred : {htheta:.4f} error : {e:.4f}")
 		#parameter_train.append((th1,th0))
 		#MSE_train.append(cost_function(th0,th1,input_train,label_train))
 	return MSE_train,parameter_train
 
 
-def PlotCostFunction(x,y,xlim1,xlim2,ylim1,ylim2):
-	plt.xlim(xlim1,xlim2)
-	plt.ylim(ylim1,ylim2)
-	plt.gca().set_aspect('auto', adjustable='box')
-	plt.plot(x,y,'ro')
-	plt.show()
+def PlotCostFunction(x,y,xlim1,xlim2,ylim1,ylim2,cst):
+	#cst.xlim(xlim1,xlim2)
+	#cst.ylim(ylim1,ylim2)
+	#cst.gca().set_aspect('auto', adjustable='box')
+	cst.plot(x,y,'ro')
+	#plt.show()
 
-def PlotRegressionData(ip,label,xlim1,xlim2,ylim1,ylim2):
+def PlotRegressionData(ip,label,xlim1,xlim2,ylim1,ylim2,reg):
 	global THETA1,THETA0
 	final_op_train = []
 	for i in ip:
 		final_op_train.append(hypothesis(THETA0,THETA1,i)) 
-	plt.plot(ip,final_op_train,'b--')
-	plt.plot(ip,label,'ro')
-	plt.xlim(0,100)
-	plt.ylim(0,500)
-	plt.gca().set_aspect('auto', adjustable='box')
-	plt.show()
+	reg.plot(ip,final_op_train,'b--')
+	reg.plot(ip,label,'ro')
+	#reg.xlim(0,100)
+	#reg.ylim(0,500)
+	#reg.gca().set_aspect('auto', adjustable='box')
+	#plt.show()
+
+#def plotting(cst,reg,):
 
 
 
@@ -94,10 +97,13 @@ def __main__():
 	print(f"MEAN SQUARED ERRORS : {MSE}")
 	#Scaled down mean square errors
 	MSE_SC = [i/2 for i in MSE]
-	
-	PlotCostFunction(theta1_train,MSE,xlim1=0,xlim2=50,ylim1=0,ylim2=200)
-	#PlotRegressionData(input_train,label_train,xlim1=0,xlim2=100,ylim1=0,ylim2=500)
-
+	fig = plt.figure()
+	# Added sub plots to plot the regression as well as the MSE variation wrt to theta1
+	cst_plt = fig.add_subplot(211)
+	reg_plt = fig.add_subplot(212)
+	PlotCostFunction(theta1_train,MSE,xlim1=0,xlim2=50,ylim1=0,ylim2=200,cst=cst_plt)
+	PlotRegressionData(input_train,label_train,xlim1=0,xlim2=100,ylim1=0,ylim2=500,reg=reg_plt)
+	plt.show()
 
 
 if __name__ =="__main__":
